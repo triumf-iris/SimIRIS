@@ -1,0 +1,14 @@
+*.o 
+*Dict.cxx 
+*Dict.cpp 
+*Dict.h 
+core 
+*~ 
+*.so
+*.swo
+*.swp
+*.root
+*.sh
+config/
+plots/
+rootfiles/
