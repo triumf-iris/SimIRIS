@@ -1,29 +1,29 @@
-# simIris
+# SimIRIS
 Simulation tool for the IRIS experiment @ TRIUMF
 
 
 ## Download and Installation ##
 	
-simIris requires ROOT (https://root.cern.ch).
+SimIRIS requires ROOT (https://root.cern.ch).
 
 Make required changes into Makefile for MacOS 
 
-To install simIris use
+To install SimIRIS use
 
-	git clone https://github.com/iris-triumf/simIris
-	cd simIris
+	git clone https://github.com/triumf-iris/SimIRIS
+	cd SimIRIS
 	make
 
-## testing the simIris ##
+## testing the SimIRIS ##
 The test folder contains the example of reaction file and geometry file for 12C(d,d)12C reaction channel @12 AMeV. 
 In main simiris directory type 
 	./simulate
 
 it will generate root file for 12C(d,d)12C in test folder
 
-## Running simIris ##
+## Running SimIRIS ##
 
-From the main simIris folder, you can run simIris with
+From the main SimIRIS folder, you can run simIris with
  
 	./bin/simIris --output=/path/to/to/your/output.file --reaction=/path/to/your/reaction.file --geo=/path/to/your/geometry.file --dedx_dir=/path/to/folder/containing/energy_loss_tables --events=number of events to be simulated [--run=run number]
 
