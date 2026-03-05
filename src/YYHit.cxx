@@ -21,14 +21,15 @@ YYHit::YYHit()
 	fX.assign(2,NAN);
 	fY.assign(2,NAN);
 	fZ.assign(2,NAN);
-	fPhiCalc.assign(2,NAN);
 	fThetaCalc.assign(2,NAN);
 	fThetaRand.assign(2,NAN);
+	fPhiCalc.assign(2,NAN);
+	fPhiRand.assign(2,NAN);
 	//hit.clear();
-	Seg.assign(2,-1);
-	Ring.assign(2,-1);
-	dE.assign(2,0);
-	dE_ideal.assign(2,0);
+	Seg.assign(2,NAN);
+	Ring.assign(2,NAN);
+	dE.assign(2,NAN);
+	dE_ideal.assign(2,NAN);
 }
 
 void YYHit::Init(Double_t th[8])
@@ -47,14 +48,15 @@ void YYHit::Init(Double_t th[8])
 	fX.assign(2,NAN);
 	fY.assign(2,NAN);
 	fZ.assign(2,NAN);
-	fPhiCalc.assign(2,NAN);
 	fThetaCalc.assign(2,NAN);
 	fThetaRand.assign(2,NAN);
+	fPhiCalc.assign(2,NAN);
+	fPhiRand.assign(2,NAN);
 	//hit.clear();
-	Seg.assign(2,-1);
-	Ring.assign(2,-1);
-	dE.assign(2,0);
-	dE_ideal.assign(2,0);
+	Seg.assign(2,NAN);
+	Ring.assign(2,NAN);
+	dE.assign(2,NAN);
+	dE_ideal.assign(2,NAN);
 }
 
 void YYHit::Clear()
@@ -63,13 +65,14 @@ void YYHit::Clear()
 	fX.assign(2,NAN);
 	fY.assign(2,NAN);
 	fZ.assign(2,NAN);
-	fPhiCalc.assign(2,NAN);
 	fThetaCalc.assign(2,NAN);
 	fThetaRand.assign(2,NAN);
+	fPhiCalc.assign(2,NAN);
+	fPhiRand.assign(2,NAN);
 	//hit.clear();
-	Seg.assign(2,-1);
-	Ring.assign(2,-1);
-	dE.assign(2,0);
+	Seg.assign(2,NAN);
+	Ring.assign(2,NAN);
+	dE.assign(2,NAN);
 	dE_ideal.assign(2,0);
 }
 
@@ -94,7 +97,7 @@ Bool_t YYHit::Hit(Double_t theta, Double_t phi, Double_t YdDistance, TVector3 ta
 
 	TRandom3 fRandom(0);
 	Double_t fX0, fY0, fZ0;
-	Double_t fPhiCalc0, fThetaCalc0, fThetaRand0;
+	Double_t fThetaCalc0, fThetaRand0, fPhiCalc0, fPhiRand0;
    	Int_t Seg0, Ring0;
 	
 	Bool_t hitTheta=0;
@@ -138,6 +141,7 @@ Bool_t YYHit::Hit(Double_t theta, Double_t phi, Double_t YdDistance, TVector3 ta
 		fY0 = fY0;	
   		Ring0 = Ring0;
   		Double_t randomTheta = fRandom.Uniform();
+		Double_t randomPhi = fRandom.Uniform();
 		Seg0 = 3-Seg0;
 		if(Seg0<0) Seg0 = Seg0 + 8;
  		fPhiCalc0 = -phiShift*TMath::RadToDeg()-((Seg0+0.5)*45.);
@@ -147,32 +151,39 @@ Bool_t YYHit::Hit(Double_t theta, Double_t phi, Double_t YdDistance, TVector3 ta
  		fThetaCalc0 = (fThetaCalc0>0) ? fThetaCalc0 : fThetaCalc0+180.;
  		fThetaRand0 = TMath::RadToDeg()*atan((50.+(Ring0*5.)+5.*randomTheta)/YdDistance);
  		fThetaRand0 = (fThetaRand0>0) ? fThetaRand0 : fThetaRand0+180.;
+		fPhiRand0 = fPhiCalc0 +(randomPhi - 0.5) * phiRange * TMath::RadToDeg();
+		if (fPhiRand0 < -180.) fPhiRand0 += 360.;
+		if (fPhiRand0 >  180.) fPhiRand0 -= 360.;
+		
 
    		if(P==0){
 		fX[0]         = fX0;
 		fY[0]         = fY0;
 		fZ[0]         = fZ0;
-		fPhiCalc[0]   = fPhiCalc0;
 		fThetaCalc[0] = fThetaCalc0;
 		fThetaRand[0] = fThetaRand0;
+		fPhiCalc[0]   = fPhiCalc0;
+		fPhiRand[0]   = fPhiRand0;
 		Seg[0]        = Seg0;
 		Ring[0]       = Ring0;}
 		else if(P==1){
 		fX[1]         = fX0;
 		fY[1]         = fY0;
 		fZ[1]         = fZ0;
-		fPhiCalc[1]   = fPhiCalc0;
 		fThetaCalc[1] = fThetaCalc0;
 		fThetaRand[1] = fThetaRand0;
+		fPhiCalc[1]   = fPhiCalc0;
+		fPhiRand[1]   = fPhiRand0;
 		Seg[1]        = Seg0;
 		Ring[1]       = Ring0;}
 		else if (P==-1){
 		fX.push_back(fX0);
 		fY.push_back(fY0);
 		fZ.push_back(fZ0);
-		fPhiCalc.push_back(fPhiCalc0);
 		fThetaCalc.push_back(fThetaCalc0);
 		fThetaRand.push_back(fThetaRand0);
+		fPhiCalc.push_back(fPhiCalc0);
+		fPhiRand.push_back(fPhiRand0);
 		Seg.push_back(Seg0);
 		Ring.push_back(Ring0);}
 	}
