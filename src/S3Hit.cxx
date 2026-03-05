@@ -18,10 +18,10 @@ S3Hit::S3Hit()
 	fThetaCalc.assign(2,NAN);
 	fThetaRand.assign(2,NAN);
 	//hit.clear;
-	Seg.assign(2,-1);
-	Ring.assign(2,-1);
-	dE.assign(2,0);
-	dE_ideal.assign(2,0);
+	Seg.assign(2,NAN);
+	Ring.assign(2,NAN);
+	dE.assign(2,NAN);
+	dE_ideal.assign(2,NAN);
 }
 
 void S3Hit::Init(Bool_t o, Double_t th)
@@ -37,10 +37,10 @@ void S3Hit::Init(Bool_t o, Double_t th)
 	fThetaCalc.assign(2,NAN);
 	fThetaRand.assign(2,NAN);
 	//hit.clear;
-	Seg.assign(2,-1);
-	Ring.assign(2,-1);
-	dE.assign(2,0);
-	dE_ideal.assign(2,0);
+	Seg.assign(2,NAN);
+	Ring.assign(2,NAN);
+	dE.assign(2,NAN);
+	dE_ideal.assign(2,NAN);
 }
 
 void S3Hit::Clear()
@@ -54,10 +54,10 @@ void S3Hit::Clear()
 	fThetaCalc.assign(2,NAN);
 	fThetaRand.assign(2,NAN);
 	//hit.clear;
-	Seg.assign(2,-1);
-	Ring.assign(2,-1);
-	dE.assign(2,0);
-	dE_ideal.assign(2,0);
+	Seg.assign(2,NAN);
+	Ring.assign(2,NAN);
+	dE.assign(2,NAN);
+	dE_ideal.assign(2,NAN);
 }
 
 Double_t S3Hit::ThetaMin(Double_t S3Distance)
@@ -170,25 +170,26 @@ Double_t S3Hit::ELoss(nucleus ncl, Double_t E, Double_t Theta, Double_t P)
 		E -= eloss(ncl,13./27.,E,0.1*2.702*0.3/cos(T),ncl.EL.eAl,ncl.EL.dedxAl); //second metal
 		E -= eloss(ncl,5./10.,E,0.1*2.3502*0.5/cos(T),ncl.EL.eB,ncl.EL.dedxB); //boron junction implant 		
 		dE0 = eloss(ncl,14./28.,E,Thickness/cos(T),ncl.EL.eSi,ncl.EL.dedxSi);
-   		// E -= dE0;
+   		E -= dE0;
+		E -= eloss(ncl,15./31.,E,0.1*1.822*0.5/cos(T),ncl.EL.eP,ncl.EL.dedxP); //phosphorus implant
+		E -= eloss(ncl,13./27.,E,0.1*2.702*0.3/cos(T),ncl.EL.eAl,ncl.EL.dedxAl); //metal
+		// E -= dE0;
 		// if(dE0<0.) dE0 = -dE0;
 		// dE_ideal0 = dE0;
 		// if(dE0!=0.) dE0 = rndm->Gaus(dE0,0.01*dE0);
 		// if(dE0<0.) dE0 = -dE0;
 	}
 	else{ // sectors first
-		E -= eloss(ncl,15./31.,E,0.1*1.8219*0.5/cos(T),ncl.EL.eP,ncl.EL.dedxP); //phosphorus implant
-		E -= eloss(ncl,13./27.,E,0.1*2.702*0.3/cos(T),ncl.EL.eAl,ncl.EL.dedxAl); //metal
 		E -= eloss(ncl,13./27.,E,0.1*2.702*0.3/cos(T),ncl.EL.eAl,ncl.EL.dedxAl); //metal
 		E -= eloss(ncl,15./31.,E,0.1*1.822*0.5/cos(T),ncl.EL.eP,ncl.EL.dedxP); //phosphorus implant
 		dE0 = eloss(ncl,14./28.,E,Thickness/cos(T),ncl.EL.eSi,ncl.EL.dedxSi);	
-   		// E -= dE0;
+   		E -= dE0;
 		// if(dE0<0.) dE0 = -dE0;
 		// dE_ideal0 = dE0;
 		// if(dE0!=0.) dE0 = rndm->Gaus(dE0,0.01*dE0);
 		// if(dE0<0.) dE0 = -dE0;
 	}
-	E -= dE0;
+	//E -= dE0;
 	if(dE0<0.) dE0 = -dE0;
 	dE_ideal0 = dE0;
 	if(dE0!=0.) dE0 = rndm->Gaus(dE0,0.0225*dE0);
@@ -204,29 +205,3 @@ Double_t S3Hit::ELoss(nucleus ncl, Double_t E, Double_t Theta, Double_t P)
 	return E;
 }
 
-void S3Hit::SortByEnergy()
-{
-	Bool_t have_swapped = true;
-	while(have_swapped == true){
-		for (Int_t x=0; x<mul; x++)
-		{
-			have_swapped = false;
-			for(Int_t y=0; y<mul-1; y++){
-				if(dE[y]<dE[y+1]){
-					std::swap(dE[y],dE[y+1]);
-					std::swap(dE_ideal[y],dE_ideal[y+1]);
-					std::swap(fX[y],fX[y+1]);
-					std::swap(fY[y],fY[y+1]);
-					std::swap(fZ[y],fZ[y+1]);
-					std::swap(fPhiCalc[y],fPhiCalc[y+1]);
-					std::swap(fPhiRand[y],fPhiRand[y+1]);
-					std::swap(fThetaCalc[y],fThetaCalc[y+1]);
-					std::swap(fThetaRand[y],fThetaRand[y+1]);
-					std::swap(Seg[y],Seg[y+1]);
-					std::swap(Ring[y],Ring[y+1]);
-					have_swapped = true;
-				}
-			}
-		}
-	}
-}
