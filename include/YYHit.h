@@ -16,9 +16,10 @@ class YYHit : public TObject{
   		std::vector<Double_t> fX;
   		std::vector<Double_t> fY;
   		std::vector<Double_t> fZ;//should be equal to distance to YY1
-  		std::vector<Double_t> fPhiCalc;//Hitd phi (using Seg)
   		std::vector<Double_t> fThetaCalc;//Hitd theta (using YdRing)
   		std::vector<Double_t> fThetaRand;//Hitd theta (using YdRing)
+		std::vector<Double_t> fPhiCalc;//Hitd phi (using Seg)
+		std::vector<Double_t> fPhiRand;//Hitd phi (using Seg)
   		std::vector<Double_t> dE;//Energy loss
   		std::vector<Double_t> dE_ideal;//Energy loss
   		//std::vector<Bool_t> hit;//hits YY1
