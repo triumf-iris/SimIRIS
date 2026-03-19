@@ -378,9 +378,9 @@ int main(int argc, char *argv[])
 	   	if(seqdecN>2&&decd.Z>0) decd.EL.loadOutgoingELoss(dedxstr,decd.name.data(),geoPrm.MFoil,geoPrm.MTgt,decd.mass);
 	}
 	if(reacPrm.N>2&&c.Z>0) c.EL.loadOutgoingELoss(dedxstr,c.name.data(),geoPrm.MFoil,geoPrm.MTgt,c.mass);
-	if(reacPrm.N>3&&d.Z>0) c.EL.loadOutgoingELoss(dedxstr,d.name.data(),geoPrm.MFoil,geoPrm.MTgt,d.mass);
-	if(reacPrm.N>4&&e.Z>0) c.EL.loadOutgoingELoss(dedxstr,e.name.data(),geoPrm.MFoil,geoPrm.MTgt,e.mass);
-	if(reacPrm.N>5&&f.Z>0) c.EL.loadOutgoingELoss(dedxstr,f.name.data(),geoPrm.MFoil,geoPrm.MTgt,f.mass);
+	if(reacPrm.N>3&&d.Z>0) d.EL.loadOutgoingELoss(dedxstr,d.name.data(),geoPrm.MFoil,geoPrm.MTgt,d.mass);
+	if(reacPrm.N>4&&e.Z>0) e.EL.loadOutgoingELoss(dedxstr,e.name.data(),geoPrm.MFoil,geoPrm.MTgt,e.mass);
+	if(reacPrm.N>5&&f.Z>0) f.EL.loadOutgoingELoss(dedxstr,f.name.data(),geoPrm.MFoil,geoPrm.MTgt,f.mass);
 
 	Double_t BeamSpot=geoPrm.Bs/2.355; // FWHM->sigma 
 	Double_t ICLength=22.9*0.00318*geoPrm.ICPressure; //cm*mg/cm^3 
