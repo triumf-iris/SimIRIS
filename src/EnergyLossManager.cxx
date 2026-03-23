@@ -1,6 +1,6 @@
 #include "EnergyLossManager.h"
 
-void EnergyLossManager::EnergyLossManager()
+EnergyLossManager::EnergyLossManager()
 {
 
 }

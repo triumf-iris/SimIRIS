@@ -6,7 +6,7 @@
 #include "TRandom3.h"
 #include "TVector3.h"
 #include "nucleus.h"
-#include "eloss.h"
+#include "EnergyLossManager.h"
 
 class YYHit : public TObject{
  	public:
@@ -37,9 +37,13 @@ class YYHit : public TObject{
 		Double_t ELoss(nucleus, Double_t, Double_t, Double_t);
 		void SortByEnergy();
   		void Clear(Option_t *option = "") override;  //!
+
+		void SetELossManager(EnergyLossManager *manager) { elMan = manager; }
+
 	protected:
 
  	private:
+		EnergyLossManager *elMan;
   
 	ClassDefOverride(YYHit,1);
 };
