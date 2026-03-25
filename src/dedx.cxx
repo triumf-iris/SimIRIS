@@ -8,32 +8,7 @@ dedx::dedx()
 
 void dedx::Clear()
 {
-	for(int i=0; i<100; i++)
-	{
-		eFoil[i] = 0.;
-		eAl[i] = 0.;	
-		eB[i] = 0.;	
-		eC4H10[i] = 0.;	
-		eCsI[i] = 0.;
-		eTgt[i] = 0.;	
-		eMy[i] = 0.;	
-		eP[i] = 0.;	
-		eSi[i] = 0.;	
-		eSi3N4[i] = 0.;	
-		eSiO2[i] = 0.;	
-
-		dedxFoil[i] = 0.;	
-		dedxAl[i] = 0.;	
-		dedxB[i] = 0.;	
-		dedxC4H10[i] = 0.;	
-		dedxCsI[i] = 0.;
-		dedxTgt[i] = 0.;	
-		dedxMy[i] = 0.;	
-		dedxP[i] = 0.;	
-		dedxSi[i] = 0.;	
-		dedxSi3N4[i] = 0.;	
-		dedxSiO2[i] = 0.;	
-	}
+	tables.clear();
 }
 
 void dedx::loadIncomingELoss(std::string path, std::string name, std::string foil, std::string tgt, double mass)
