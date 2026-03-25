@@ -28,7 +28,7 @@ LDFLAGS = -O2
 
 all:  $(BINARYDIR)/simIris
 
-$(BINARYDIR)/simIris: $(OBJECTDIR)/simIris.o $(OBJECTDIR)/nucleus.o $(OBJECTDIR)/reacParams.o $(OBJECTDIR)/geoParams.o $(OBJECTDIR)/dedx.o $(OBJECTDIR)/dwba.o $(OBJECTDIR)/eloss.o $(OBJECTDIR)/shieldClear.o $(LIBDIR)/libSimEvent.so $(OBJECTDIR)/SimEventDict.o
+$(BINARYDIR)/simIris: $(OBJECTDIR)/simIris.o $(OBJECTDIR)/nucleus.o $(OBJECTDIR)/reacParams.o $(OBJECTDIR)/geoParams.o $(OBJECTDIR)/dedx.o $(OBJECTDIR)/dwba.o $(OBJECTDIR)/EnergyLossManager.o $(OBJECTDIR)/shieldClear.o $(LIBDIR)/libSimEvent.so $(OBJECTDIR)/SimEventDict.o
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(ROOTGLIBS) -lm -lz -lutil -lpthread -lrt
 #remove -lnsl and -lrt for macOS
 $(LIBDIR)/libSimEvent.so: $(OBJECTDIR)/PTrack.o $(OBJECTDIR)/YYHit.o $(OBJECTDIR)/IPhys.o $(OBJECTDIR)/CsIHit.o $(OBJECTDIR)/S3Hit.o $(OBJECTDIR)/IDet.o $(OBJECTDIR)/SimEventDict.o
@@ -53,7 +53,7 @@ $(OBJECTDIR)/dedx.o: $(SOURCEDIR)/dedx.cxx
 $(OBJECTDIR)/dwba.o: $(SOURCEDIR)/dwba.cxx
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(OBJECTDIR)/eloss.o: $(SOURCEDIR)/eloss.cxx
+$(OBJECTDIR)/EnergyLossManager.o: $(SOURCEDIR)/EnergyLossManager.cxx
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(OBJECTDIR)/shieldClear.o: $(SOURCEDIR)/shieldClear.cxx
