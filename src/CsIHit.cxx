@@ -1,4 +1,5 @@
 #include "CsIHit.h"
+#include "IrisMaterial.h"
 
 ClassImp(CsIHit);
 
@@ -146,10 +147,10 @@ Double_t CsIHit::ELoss(nucleus ncl, Double_t E, Double_t T, Double_t P)
   	Double_t dE0, dE_ideal0;
 	//if(mul>0 && hit0==1){
 		TRandom3 *rndm = new TRandom3(0);
-		E -= elMan->eloss(ncl,15./31.,E,0.1*1.8219*0.1/cos(T),ncl.EL.eP, ncl.EL.dedxP);
-		E -= elMan->eloss(ncl,13./27.,E,0.3*2.702*0.1/cos(T),ncl.EL.eAl, ncl.EL.dedxAl);
-		E -= elMan->eloss(ncl,100./192.,E,6.*1.4*0.1/cos(T),ncl.EL.eMy, ncl.EL.dedxMy);
-		dE0 = elMan->eloss(ncl,108./260.,E,Thickness/cos(T),ncl.EL.eCsI, ncl.EL.dedxCsI);
+		E -= elMan->eloss(ncl,15./31.,E,0.1*1.8219*0.1/cos(T),IrisMaterial::P);
+		E -= elMan->eloss(ncl,13./27.,E,0.3*2.702*0.1/cos(T),IrisMaterial::Al);
+		E -= elMan->eloss(ncl,100./192.,E,6.*1.4*0.1/cos(T),IrisMaterial::Mylar);
+		dE0 = elMan->eloss(ncl,108./260.,E,Thickness/cos(T),IrisMaterial::CsI);
 		E -= dE0;
 		if(dE0<0.) dE0 = -dE0;
 		dE_ideal0 = dE0;

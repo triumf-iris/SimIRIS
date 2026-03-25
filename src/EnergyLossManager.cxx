@@ -5,7 +5,7 @@ EnergyLossManager::EnergyLossManager()
 
 }
 
-double EnergyLossManager::eval(double in, double x[100], double y[100])
+double EnergyLossManager::eval(double in, std::array<double, 100> x, std::array<double, 100> y)
 {
 	double dxin=0., dx=0., dy=0., e=0.;
 	if(in<=0.){
@@ -34,8 +34,18 @@ double EnergyLossManager::eval(double in, double x[100], double y[100])
 	return e;
 }
 
+double EnergyLossManager::eloss(nucleus P, double TZoverA, double ein, double th , std::array<double, 100> x, std::array<double, 100> y)//initial energy and thickness are given as arguments 
+{
+	return eloss_Lise(P, TZoverA, ein, th, x, y);
+}
+
+double EnergyLossManager::eloss(nucleus P, double TZoverA, double ein, double th , IrisMaterial material)//initial energy and thickness are given as arguments 
+{
+	return eloss_Lise(P, TZoverA, ein, th, P.EL.GetE(material), P.EL.GetDeDx(material));
+}
+
 //Make it a method for a particle class.
-double EnergyLossManager::eloss(nucleus P, double TZoverA, double ein, double th , double x[100], double y[100])//initial energy and thickness are given as arguments 
+double EnergyLossManager::eloss_Lise(nucleus P, double TZoverA, double ein, double th , std::array<double, 100> x, std::array<double, 100> y)//initial energy and thickness are given as arguments 
 {
 
 	double k;
@@ -72,7 +82,12 @@ double EnergyLossManager::eloss(nucleus P, double TZoverA, double ein, double th
 	return ein-en;
 }
 
-double EnergyLossManager::elossFi(double efi, double th, double x[100], double y[100])//final energy and thickness are given as arguments 
+double EnergyLossManager::elossFi(nucleus P, double efi, double th, IrisMaterial material)//final energy and thickness are given as arguments 
+{
+	return elossFi_Lise(efi, th, P.EL.GetE(material), P.EL.GetDeDx(material));
+}
+
+double EnergyLossManager::elossFi_Lise(double efi, double th, std::array<double, 100> x, std::array<double, 100> y)//final energy and thickness are given as arguments 
 {
 	if (th==0) return efi;
 	//Energy loss calculation
