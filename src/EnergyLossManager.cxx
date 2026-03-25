@@ -34,11 +34,6 @@ double EnergyLossManager::eval(double in, std::array<double, 100> x, std::array<
 	return e;
 }
 
-double EnergyLossManager::eloss(nucleus P, double TZoverA, double ein, double th , std::array<double, 100> x, std::array<double, 100> y)//initial energy and thickness are given as arguments 
-{
-	return eloss_Lise(P, TZoverA, ein, th, x, y);
-}
-
 double EnergyLossManager::eloss(nucleus P, double TZoverA, double ein, double th , IrisMaterial material)//initial energy and thickness are given as arguments 
 {
 	return eloss_Lise(P, TZoverA, ein, th, P.EL.GetE(material), P.EL.GetDeDx(material));
