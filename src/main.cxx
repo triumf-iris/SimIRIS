@@ -431,6 +431,11 @@ int main(int argc, char *argv[])
 			tableBOuts[i].open(inumB); 
 			tablebOuts[i].open(inumb); 
 		}*/
+		#ifndef USE_CATIMA
+		std::cout << "ERROR: dedx tables not supplied!" << std::endl;
+		file->Close();
+		return 1;
+		#endif
 		std::cout << "Using dedx tables from catima" << std::endl;
 		A.EL.makeCatimaTables(A.A, A.Z, geoPrm.MFoil, geoPrm.MTgt, A.mass);
 		a.EL.makeCatimaTables(a.A, a.Z, geoPrm.MFoil, geoPrm.MTgt, a.mass);

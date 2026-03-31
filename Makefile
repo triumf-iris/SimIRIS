@@ -8,10 +8,20 @@ OBJECTDIR = $(BASEDIR)/obj
 BINARYDIR = $(BASEDIR)/bin
 HEADER = -I$(INCLUDEDIR) #-I$(TREEIRIS)/include
 
+USE_CATIMA ?= 0
+
 CATIMAPATH ?= /home/iris/curtis/NewIris/catima/install
+CATIMALIBDIR =
+CATIMALIBS =
+CATIMAINC =
+CATIMADEF =
+
+ifeq ($(USE_CATIMA), 1)
 CATIMALIBDIR = -L$(CATIMAPATH)/lib
 CATIMALIBS = -Wl,-rpath,$(CATIMAPATH)/lib -lcatima
 CATIMAINC = -isystem $(CATIMAPATH)/include
+CATIMADEF = -DUSE_CATIMA
+endif
 
 CXX = g++
 LD = g++
@@ -21,7 +31,7 @@ CXXFLAGS += -g -O -Wall -Wuninitialized -I./ -I$(ROOTSYS)/include
 ROOTCFLAGS    = $(shell root-config --cflags)
 CXXFLAGS += $(HEADER)
 CXXFLAGS      += -g -ansi -fPIC $(ROOTCFLAGS)
-CXXFLAGS += $(CATIMAINC)
+CXXFLAGS += $(CATIMAINC) $(CATIMADEF)
 endif 
 
 
@@ -88,7 +98,7 @@ $(OBJECTDIR)/SimEventDict.o: $(LIBDIR)/SimEventDict.cxx
 
 $(LIBDIR)/SimEventDict.cxx:  $(INCLUDEDIR)/PTrack.h $(INCLUDEDIR)/YYHit.h $(INCLUDEDIR)/IPhys.h $(INCLUDEDIR)/CsIHit.h $(INCLUDEDIR)/S3Hit.h $(INCLUDEDIR)/IDet.h $(INCLUDEDIR)/SimEventLinkDef.h
 	@echo "Generating dictionary $@..."
-	@rootcint -f $@ -c $(HEADER) $(CATIMAINC) $^
+	@rootcint -f $@ -c $(HEADER) $(CATIMAINC) $(CATIMADEF) $^
 
 clean::
 	rm -f $(OBJECTDIR)/*.o

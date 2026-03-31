@@ -1,7 +1,9 @@
 #include "dedx.h"
 #include <iostream>
 #include "TString.h"
+#ifdef USE_CATIMA
 #include "catima/catima.h"
+#endif
 
 dedx::dedx()
 {
@@ -72,6 +74,7 @@ void dedx::loadELoss(std::string filename, IrisMaterial material, double m)
 
 void dedx::makeCatimaTables(int projectileA, int projectileZ, std::string foil, std::string target, double mass)
 {
+	#ifdef USE_CATIMA
 	catima::Projectile projectile(projectileA, projectileZ);
 
 	catima::Material foilMat;
@@ -142,5 +145,6 @@ void dedx::makeCatimaTables(int projectileA, int projectileZ, std::string foil, 
 		}
 		tables.emplace(irisMat, make_pair(e, dedx));
 	}
+	#endif
 }
 	
