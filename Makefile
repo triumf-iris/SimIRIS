@@ -8,6 +8,11 @@ OBJECTDIR = $(BASEDIR)/obj
 BINARYDIR = $(BASEDIR)/bin
 HEADER = -I$(INCLUDEDIR) #-I$(TREEIRIS)/include
 
+CATIMAPATH ?= /home/iris/curtis/NewIris/catima/install
+CATIMALIBDIR = -L$(CATIMAPATH)/lib
+CATIMALIBS = -Wl,-rpath,$(CATIMAPATH)/lib -lcatima
+CATIMAINC = -isystem $(CATIMAPATH)/include
+
 CXX = g++
 LD = g++
 ifdef ROOTSYS
@@ -16,6 +21,7 @@ CXXFLAGS += -g -O -Wall -Wuninitialized -I./ -I$(ROOTSYS)/include
 ROOTCFLAGS    = $(shell root-config --cflags)
 CXXFLAGS += $(HEADER)
 CXXFLAGS      += -g -ansi -fPIC $(ROOTCFLAGS)
+CXXFLAGS += $(CATIMAINC)
 endif 
 
 
@@ -29,7 +35,7 @@ LDFLAGS = -O2
 all:  $(BINARYDIR)/simIris
 
 $(BINARYDIR)/simIris: $(OBJECTDIR)/simIris.o $(OBJECTDIR)/nucleus.o $(OBJECTDIR)/reacParams.o $(OBJECTDIR)/geoParams.o $(OBJECTDIR)/dedx.o $(OBJECTDIR)/dwba.o $(OBJECTDIR)/EnergyLossManager.o $(OBJECTDIR)/shieldClear.o $(LIBDIR)/libSimEvent.so $(OBJECTDIR)/SimEventDict.o
-	$(CXX) -o $@ $(CXXFLAGS) $^ $(ROOTGLIBS) -lm -lz -lutil -lpthread -lrt
+	$(CXX) -o $@ $(CXXFLAGS) $^ $(CATIMALIBDIR) $(ROOTGLIBS) $(CATIMALIBS) -lm -lz -lutil -lpthread -lrt
 #remove -lnsl and -lrt for macOS
 $(LIBDIR)/libSimEvent.so: $(OBJECTDIR)/PTrack.o $(OBJECTDIR)/YYHit.o $(OBJECTDIR)/IPhys.o $(OBJECTDIR)/CsIHit.o $(OBJECTDIR)/S3Hit.o $(OBJECTDIR)/IDet.o $(OBJECTDIR)/SimEventDict.o
 	$(LD) $(SOFLAGS) $(LDFLAGS) $(ROOTGLIBS) $^ -o $@
@@ -82,7 +88,7 @@ $(OBJECTDIR)/SimEventDict.o: $(LIBDIR)/SimEventDict.cxx
 
 $(LIBDIR)/SimEventDict.cxx:  $(INCLUDEDIR)/PTrack.h $(INCLUDEDIR)/YYHit.h $(INCLUDEDIR)/IPhys.h $(INCLUDEDIR)/CsIHit.h $(INCLUDEDIR)/S3Hit.h $(INCLUDEDIR)/IDet.h $(INCLUDEDIR)/SimEventLinkDef.h
 	@echo "Generating dictionary $@..."
-	@rootcint -f $@ -c $(HEADER) $^
+	@rootcint -f $@ -c $(HEADER) $(CATIMAINC) $^
 
 clean::
 	rm -f $(OBJECTDIR)/*.o
