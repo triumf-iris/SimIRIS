@@ -79,11 +79,11 @@ void dedx::makeCatimaTables(int projectileA, int projectileZ, std::string foil, 
 
 	catima::Material foilMat;
 	if(foil == "Ag") {
-		foilMat.add_element(109, 47, 1);
+		foilMat.add_element(107, 47, 1);
 	}
 	else {
 		std::cout << "Warning: Foil Material not found in dedx.cxx!" << std::endl << "Defaulting to Ag." << std::endl;
-		foilMat.add_element(109, 47, 1);
+		foilMat.add_element(107, 47, 1);
 	}
 
 	catima::Material targetMat;
