@@ -65,6 +65,14 @@ Each parameter in both the geometry and the reaction parameter file has to be se
 
 simIris uses SRIM  energy loss tables to calculate the energy loss of particles going through detector materials or the target. Tables in a usable format can be created using LISE++.
 
+## CATIMA ##
+
+simIris supports using [catima](https://github.com/hrosiak/catima) for generating energy loss table automatically based on the geometry and reaction input files. If you want to use this functionality, install catima an your system then compile using the following flags
+
+	make USE_CATIMA=1 CATIMAPATH=[path to catima]
+
+To run a simulation using catima, omit the --dedx_files when running simiris and it will default to generating tables from catima.
+
 ## Output files
 
 The output root file of simIris contains a tree with the following objects:
