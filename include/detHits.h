@@ -1,4 +1,6 @@
 #include "header.h"
+#include "EnergyLossManager.h"
+#include "IrisMaterial.h"
 
 Bool_t detHits(PTrack tr, nucleus ncl, TVector3 reacPos, Bool_t maskIn, Bool_t shieldIn, Double_t P)
 {
@@ -43,18 +45,18 @@ PTrack TgtELoss(PTrack tr, nucleus ncl, geoParams g, Double_t reacZ, Bool_t isSH
 	if(isSHTReac){ //Reaction in SHT
 		if(g.Orientation==0&&tr.T<TMath::Pi()/2.){ // foil before target, theta<90 deg
 	   		tr.FoildE = 0.;	
-			tr.TrgtdE = eloss(ncl,1./g.AoZTgt,tr.E,(g.TTgt-reacZ)/TMath::Cos(tr.T),ncl.EL.eTgt,ncl.EL.dedxTgt);	
+			tr.TrgtdE = elMan->eloss(ncl,1./g.AoZTgt,tr.E,(g.TTgt-reacZ)/TMath::Cos(tr.T),IrisMaterial::Target);	
 		}
 		if(g.Orientation==0&&tr.T>TMath::Pi()/2.){ // foil before target, theta>90 deg
-			tr.TrgtdE = eloss(ncl,1./g.AoZTgt,tr.E,reacZ/TMath::Cos(TMath::Pi()-tr.T),ncl.EL.eTgt,ncl.EL.dedxTgt);	
-			tr.FoildE = eloss(ncl,1./g.AoZFoil,tr.E-tr.TrgtdE,g.TFoil/TMath::Cos(TMath::Pi()-tr.T),ncl.EL.eFoil,ncl.EL.dedxFoil);	
+			tr.TrgtdE = elMan->eloss(ncl,1./g.AoZTgt,tr.E,reacZ/TMath::Cos(TMath::Pi()-tr.T),IrisMaterial::Target);	
+			tr.FoildE = elMan->eloss(ncl,1./g.AoZFoil,tr.E-tr.TrgtdE,g.TFoil/TMath::Cos(TMath::Pi()-tr.T),IrisMaterial::Foil);	
 		}
 		if(g.Orientation==1&&tr.T<TMath::Pi()/2.){ // foil after target, theta<90 deg
-			tr.TrgtdE = eloss(ncl,1./g.AoZTgt,tr.E,(g.TTgt-reacZ)/TMath::Cos(tr.T),ncl.EL.eTgt,ncl.EL.dedxTgt);	
-			tr.FoildE = eloss(ncl,1./g.AoZFoil,tr.E-tr.TrgtdE,g.TFoil/TMath::Cos(tr.T),ncl.EL.eFoil,ncl.EL.dedxFoil);	
+			tr.TrgtdE = elMan->eloss(ncl,1./g.AoZTgt,tr.E,(g.TTgt-reacZ)/TMath::Cos(tr.T),IrisMaterial::Target);	
+			tr.FoildE = elMan->eloss(ncl,1./g.AoZFoil,tr.E-tr.TrgtdE,g.TFoil/TMath::Cos(tr.T),IrisMaterial::Foil);	
 		}
 		if(g.Orientation==1&&tr.T>TMath::Pi()/2.){ // foil after target, theta>90 deg
-			tr.TrgtdE = eloss(ncl,1./g.AoZTgt,tr.E,reacZ/TMath::Cos(TMath::Pi()-tr.T),ncl.EL.eTgt,ncl.EL.dedxTgt);	
+			tr.TrgtdE = elMan->eloss(ncl,1./g.AoZTgt,tr.E,reacZ/TMath::Cos(TMath::Pi()-tr.T),IrisMaterial::Target);	
 	   		tr.FoildE = 0.;	
 		}
 	}
@@ -62,10 +64,10 @@ PTrack TgtELoss(PTrack tr, nucleus ncl, geoParams g, Double_t reacZ, Bool_t isSH
         
         if(tr.T<TMath::Pi()/2.){
             tr.TrgtdE = 0.;
-            tr.FoildE = eloss(ncl,1./g.AoZFoil,tr.E,(g.TFoil-reacZ)/TMath::Cos(tr.T),ncl.EL.eFoil,ncl.EL.dedxFoil);
+            tr.FoildE = elMan->eloss(ncl,1./g.AoZFoil,tr.E,(g.TFoil-reacZ)/TMath::Cos(tr.T),IrisMaterial::Foil);
         }
         if(tr.T>TMath::Pi()/2.){ // foil after target, theta>90 deg
-            tr.FoildE = eloss(ncl,1./g.AoZFoil,tr.E,reacZ/TMath::Cos(TMath::Pi()-tr.T),ncl.EL.eFoil,ncl.EL.dedxFoil);
+            tr.FoildE = elMan->eloss(ncl,1./g.AoZFoil,tr.E,reacZ/TMath::Cos(TMath::Pi()-tr.T),IrisMaterial::Foil);
             tr.TrgtdE =0;
         }
     }
@@ -80,7 +82,7 @@ void setIDet(Double_t ICdE, Double_t SSBdE, Bool_t sortEnergies)
 	if(yd.mul>0)
 	{
   		det.TYdMul = yd.mul;
-		for(Int_t i=0; i<yd.dE.size(); i++){ // yd.dE.size() used instead of Mul to consider Mul=2 and Yd.size() = 3
+		for(size_t i=0; i<yd.dE.size(); i++){ // yd.dE.size() used instead of Mul to consider Mul=2 and Yd.size() = 3
 			det.TYdEnergy.push_back(yd.dE[i]);
   			det.TYdTheta.push_back(yd.fThetaRand[i]);// Yd theta angle
 			det.TYdPhi.push_back(yd.fPhiRand[i]);// Yd theta angle                                                                        
@@ -92,9 +94,9 @@ void setIDet(Double_t ICdE, Double_t SSBdE, Bool_t sortEnergies)
 	if(sortEnergies==1){
 	Bool_t have_swapped = true;
 		while(have_swapped == true){
-			for (Int_t x=0; x<det.TYdEnergy.size(); x++){
+			for (size_t x=0; x<det.TYdEnergy.size(); x++){
 				have_swapped = false;
-				for(Int_t y=0; y<det.TYdEnergy.size()-1; y++){
+				for(size_t y=0; y<det.TYdEnergy.size()-1; y++){
 					if (std::isnan(det.TYdEnergy[y]) || (!std::isnan(det.TYdEnergy[y+1]) && det.TYdEnergy[y] < det.TYdEnergy[y+1])){	//If Energies are NAN's
 						std::swap(det.TYdEnergy[y],det.TYdEnergy[y+1]);
 						std::swap(det.TYdTheta[y],det.TYdTheta[y+1]);
@@ -111,15 +113,15 @@ void setIDet(Double_t ICdE, Double_t SSBdE, Bool_t sortEnergies)
 	}
 
 	det.TCsI1Energy.resize(yd.dE.size(),NAN);
-	det.TCsI1Channel.resize(yd.dE.size(),NAN);
+	det.TCsI1Channel.resize(yd.dE.size(),-1);
 	det.TCsI1Phi.resize(yd.dE.size(),NAN);
 	det.TCsI2Energy.resize(yd.dE.size(),NAN);
-	det.TCsI2Channel.resize(yd.dE.size(),NAN);
+	det.TCsI2Channel.resize(yd.dE.size(),-1);
 	det.TCsI2Phi.resize(yd.dE.size(),NAN);
 	if(csi.mul>0 && det.TYdMul>0)
 	{
-		for(Int_t i=0; i<csi.dE.size(); i++){
-			for(Int_t l=0;l<det.TYdEnergy.size();l++){
+		for(size_t i=0; i<csi.dE.size(); i++){
+			for(size_t l=0;l<det.TYdEnergy.size();l++){
 				if(((csi.Seg[i]/2)-det.TYdNo.at(l))==0){
 					if(csi.dE[i]>0 && det.TYdEnergy.at(l)>0){
 					det.TCsI1Mul++;
@@ -157,10 +159,10 @@ void setIDet(Double_t ICdE, Double_t SSBdE, Bool_t sortEnergies)
 		if(sortEnergies==1){
 			Bool_t have_swapped = true;
 			while(have_swapped == true){
-			for (Int_t x=0; x<det.TSd1rEnergy.size(); x++)
+			for (size_t x=0; x<det.TSd1rEnergy.size(); x++)
 			{
 				have_swapped = false;
-				for(Int_t y=0; y<det.TSd1rEnergy.size()-1; y++){
+				for(size_t y=0; y<det.TSd1rEnergy.size()-1; y++){
 					if (std::isnan(det.TSd1rEnergy[y]) || (!std::isnan(det.TSd1rEnergy[y+1]) && det.TSd1rEnergy[y] < det.TSd1rEnergy[y+1])){	//If Energies are NAN's
 						std::swap(det.TSd1rEnergy[y],det.TSd1rEnergy[y+1]);
 						std::swap(det.TSd1rChannel[y],det.TSd1rChannel[y+1]);
@@ -177,26 +179,30 @@ void setIDet(Double_t ICdE, Double_t SSBdE, Bool_t sortEnergies)
 	}
 
 	det.TSd2rEnergy.resize(sd1.dE.size(),NAN);
-	det.TSd2rChannel.resize(sd1.dE.size(),NAN);
+	det.TSd2rChannel.resize(sd1.dE.size(),-1);
 	det.TSd2Theta.resize(sd1.dE.size(),NAN);
 	det.TSd2sEnergy.resize(sd1.dE.size(),NAN);
-	det.TSd2sChannel.resize(sd1.dE.size(),NAN);
+	det.TSd2sChannel.resize(sd1.dE.size(),-1);
 	det.TSd2Phi.resize(sd1.dE.size(),NAN);
 	if(det.TSd1rMul>0 && sd2.mul>0)
 	{
 		det.TSd2rMul = sd2.dE.size();
-		for(Int_t i=0; i<sd2.dE.size(); i++){ if(sd2.dE[i]>0){
+		for(size_t i=0; i<sd2.dE.size(); i++){ if(sd2.dE[i]>0){
 			bool RingMatch=0, SectorMatch=0;
-			for(Int_t l=0;l<det.TSd1rEnergy.size();l++){ if (det.TSd1rEnergy.at(l)>0) {
+			for(size_t l=0;l<det.TSd1rEnergy.size();l++){ if (det.TSd1rEnergy.at(l)>0) {
 				if((sd2.Ring[i]-det.TSd1rChannel.at(l))>=0 && (sd2.Ring[i]-det.TSd1rChannel.at(l))<=2){
 					det.TSd2rEnergy.at(l)=sd2.dE[i];
 					det.TSd2rChannel.at(l)=sd2.Ring[i];
 					det.TSd2Theta.at(l)=sd2.fThetaRand[i];
 					RingMatch=1;
 					}
-				if ((sd2.Seg[i]-det.TSd1sChannel.at(l))==-1 || (sd2.Seg[i]-det.TSd1sChannel.at(l))==0 || (sd2.Seg[i]-det.TSd1sChannel.at(l))==1 || (sd2.Seg[i]-det.TSd1sChannel.at(l))==31 || (sd2.Seg[i]-det.TSd1sChannel.at(l))==-31){
+					int sd2Seg = sd2.Seg[i];
+					if(sd2.Orientation != sd1.Orientation) {
+						sd2Seg = 31 - sd2Seg;
+					}
+				if ((sd2Seg-det.TSd1sChannel.at(l))==-1 || (sd2Seg-det.TSd1sChannel.at(l))==0 || (sd2Seg-det.TSd1sChannel.at(l))==1 || (sd2Seg-det.TSd1sChannel.at(l))==31 || (sd2Seg-det.TSd1sChannel.at(l))==-31){
 					det.TSd2sEnergy.at(l)=sd2.dE[i];
-					det.TSd2sChannel.at(l)=sd2.Seg[i];
+					det.TSd2sChannel.at(l)=sd2Seg;
 					det.TSd2Phi.at(l)=sd2.fPhiRand[i];
 					SectorMatch=1;
 				}	
@@ -218,7 +224,7 @@ void setIDet(Double_t ICdE, Double_t SSBdE, Bool_t sortEnergies)
 	if(yu.mul>0)
 	{
   		det.TYuMul = yu.mul;
-		for(Int_t i=0; i<yd.dE.size(); i++){
+		for(size_t i=0; i<yd.dE.size(); i++){
 			det.TYuEnergy.push_back(yu.dE[i]);
   			det.TYuTheta.push_back(yu.fThetaRand[i]);// Yu theta angle                                                                       
 			det.TYuChannel.push_back(yu.Seg[i]*16+yu.Ring[i]);
@@ -229,9 +235,9 @@ void setIDet(Double_t ICdE, Double_t SSBdE, Bool_t sortEnergies)
 	if(yu.mul>1 && sortEnergies==1) {
 	Bool_t have_swapped = true;
 		while(have_swapped == true){
-			for (Int_t x=0; x<det.TYuEnergy.size(); x++){
+			for (size_t x=0; x<det.TYuEnergy.size(); x++){
 				have_swapped = false;
-				for(Int_t y=0; y<det.TYuEnergy.size()-1; y++){
+				for(size_t y=0; y<det.TYuEnergy.size()-1; y++){
 					if(det.TYuEnergy[y]<det.TYuEnergy[y+1]){
 						std::swap(det.TYuEnergy[y],det.TYuEnergy[y+1]);
 						std::swap(det.TYuTheta[y],det.TYuTheta[y+1]);
@@ -265,9 +271,9 @@ void setIDet(Double_t ICdE, Double_t SSBdE, Bool_t sortEnergies)
 	if(su.mul>1){
 	Bool_t have_swapped = true;
 		while(have_swapped == true){
-			for (Int_t x=0; x<det.TSurEnergy.size(); x++){
+			for (size_t x=0; x<det.TSurEnergy.size(); x++){
 				have_swapped = false;
-				for(Int_t y=0; y<det.TSurEnergy.size()-1; y++){
+				for(size_t y=0; y<det.TSurEnergy.size()-1; y++){
 					if(det.TSurEnergy[y]<det.TSurEnergy[y+1]){
 						std::swap(det.TSurEnergy[y],det.TSurEnergy[y+1]);
 						std::swap(det.TSurChannel[y],det.TSurChannel[y+1]);
