@@ -97,7 +97,7 @@ void setIDet(Double_t ICdE, Double_t SSBdE, Bool_t sortEnergies)
 			for (size_t x=0; x<det.TYdEnergy.size(); x++){
 				have_swapped = false;
 				for(size_t y=0; y<det.TYdEnergy.size()-1; y++){
-					if(det.TYdEnergy[y]<det.TYdEnergy[y+1]){
+					if (std::isnan(det.TYdEnergy[y]) || (!std::isnan(det.TYdEnergy[y+1]) && det.TYdEnergy[y] < det.TYdEnergy[y+1])){	//If Energies are NAN's
 						std::swap(det.TYdEnergy[y],det.TYdEnergy[y+1]);
 						std::swap(det.TYdTheta[y],det.TYdTheta[y+1]);
 						std::swap(det.TYdPhi[y],det.TYdPhi[y+1]);
@@ -163,7 +163,7 @@ void setIDet(Double_t ICdE, Double_t SSBdE, Bool_t sortEnergies)
 			{
 				have_swapped = false;
 				for(size_t y=0; y<det.TSd1rEnergy.size()-1; y++){
-					if(det.TSd1rEnergy[y]<det.TSd1rEnergy[y+1]){
+					if (std::isnan(det.TSd1rEnergy[y]) || (!std::isnan(det.TSd1rEnergy[y+1]) && det.TSd1rEnergy[y] < det.TSd1rEnergy[y+1])){	//If Energies are NAN's
 						std::swap(det.TSd1rEnergy[y],det.TSd1rEnergy[y+1]);
 						std::swap(det.TSd1rChannel[y],det.TSd1rChannel[y+1]);
 						std::swap(det.TSd1Theta[y],det.TSd1Theta[y+1]);
