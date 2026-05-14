@@ -22,11 +22,15 @@ void IDet::Clear(Option_t *option)
 	
 	TCsI1Mul=0;
   	TCsI1Energy.clear();
-  	TCsI2Energy.clear();
   	TCsI1ADC.clear();
-  	
 	TCsI1Channel.clear();
 	TCsI1Phi.clear();
+
+	TCsI2Mul=0;
+  	TCsI2Energy.clear();
+  	TCsI2ADC.clear();
+	TCsI2Channel.clear();
+	TCsI2Phi.clear();
 
 	TSSBADC=0;
 	TSSBEnergy=0;
@@ -70,7 +74,7 @@ void IDet::Clear(Option_t *option)
 	TYuMul=0;  
 	TYuADC.clear();
 	TYuEnergy.clear();
-  	TYuTheta.clear();// Yd theta angle                                                                       
+  	TYuTheta.clear();// Yu theta angle                                                                       
 	TYuChannel.clear();
 	TYuNo.clear();
 	TYuRing.clear();
