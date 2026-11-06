@@ -58,7 +58,7 @@ void QvalueCalculate(nucleus ncl,Double_t E_center_Tgt, Double_t mc, Double_t mA
                 Eb+= sd1.dE[P]; //use measured Sd // change june2
 				Eb = Eb+elMan->elossFi(ncl,Eb,0.1*2.35*0.5/cosTheta,IrisMaterial::B); //boron junction implant
 				Eb = Eb+elMan->elossFi(ncl,Eb,0.1*2.7*0.3/cosTheta,IrisMaterial::Al); //first metal
-				Eb = Eb+elMan->elossFi(ncl,Eb,0.1*2.65*2.5/cosTheta,IrisMaterial::SiO2); //SiO2
+				Eb = Eb+elMan->elossFi(ncl,Eb,0.1*2.32*2.5/cosTheta,IrisMaterial::SiO2); //SiO2
 				Eb = Eb+elMan->elossFi(ncl,Eb,0.1*2.7*1.5/cosTheta,IrisMaterial::Al); //second metal
 				if(geoPrm.Orientation==1){ Eb=Eb+elMan->elossFi(ncl,Eb,geoPrm.TFoil/cosTheta,IrisMaterial::Foil);}
 				Eb= Eb+elMan->elossFi(ncl,Eb,geoPrm.TTgt/2./cosTheta,IrisMaterial::Target); //deuteron energy  in mid target midtarget
@@ -103,7 +103,7 @@ void QvalueCalculate(nucleus ncl,Double_t E_center_Tgt, Double_t mc, Double_t mA
 			Double_t cosTheta = TMath::Cos(yu.fThetaCalc[1]*TMath::DegToRad());
 			Eb = Eb+elMan->elossFi(Eb,0.1*2.35*0.5/cosTheta,ncl.EL.eB,ncl.EL.dedxB); //boron junction implant
 			Eb = Eb+elMan->elossFi(Eb,0.1*2.7*0.3/cosTheta,ncl.EL.eAl,ncl.EL.dedxAl); //first metal
-			Eb = Eb+elMan->elossFi(Eb,0.1*2.65*2.5/cosTheta,ncl.EL.eSiO2,ncl.EL.dedxSiO2); //SiO2
+			Eb = Eb+elMan->elossFi(Eb,0.1*2.32*2.5/cosTheta,ncl.EL.eSiO2,ncl.EL.dedxSiO2); //SiO2
 			Eb = Eb+elMan->elossFi(Eb,0.1*2.7*1.5/cosTheta,ncl.EL.eAl,ncl.EL.dedxAl); //second metal	
 	    	if(geoPrm.Orientation==0){ Eb=Eb+elMan->elossFi(Eb,geoPrm.TFoil/cosTheta,ncl.EL.eFoil,ncl.EL.dedxFoil);}
 			Eb= Eb+elMan->elossFi(Eb,geoPrm.TTgt/2./cosTheta,ncl.EL.eTgt,ncl.EL.dedxTgt); 
